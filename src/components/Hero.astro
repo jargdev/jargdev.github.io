@@ -1,31 +1,40 @@
 <div class="relative w-full overflow-hidden flex justify-center">
   <div class="relative w-full max-w-[1920px] aspect-[20/9] overflow-hidden">
     <div class="absolute inset-0 z-0 transform will-change-transform">
-      <img
-        src="/hero/bg.png"
-        alt="Background"
-        class="w-full h-full object-cover"
-      />
+      <div
+        class="w-full h-full object-cover bg-gradient-to-b from-[#fa380d] to-[#fe850d]"
+      >
+      </div>
     </div>
 
     <div
-      class="absolute inset-0 overflow-hidden z-10 transform will-change-transform flex justify-center items-center"
+      class="absolute inset-0 overflow-hidden z-0 transform will-change-transform flex justify-center items-center"
       data-speed="0.5"
     >
+      <div
+        class="absolute inset-0 z-5 bg-repeat"
+        style="
+        background-image: url('/hero/repeat.png');
+        background-size: auto;
+        animation: scroll-tile 30s linear infinite;
+        
+      "
+      >
+      </div>
       <img
         src="/hero/me.png"
         alt="Foreground 1"
-        class="w-full h-full object-contain"
+        class="w-full h-full object-contain z-10"
       />
 
-      <div class="absolute bottom-0 right-0">
+      <div class="absolute bottom-0 right-0 z-20">
         <img
           src="/hero/jargudevu.png"
           alt="Foreground 2"
           class="w-full h-full object-contain"
         />
         <button
-          class="absolute bg-white text-black px-2 py-2 rounded-full hover:bg-gray-200 transition aspect-square hover:cursor-pointer"
+          class="absolute bg-white text-black px-2 py-2 rounded-full hover:bg-gray-200 transition aspect-square hover:cursor-pointer hover:scale-120 hover:rotate-[-12deg]"
           style="top: 35%; left: 77%;"
           id="sound-btn"
         >
@@ -81,3 +90,14 @@
     source.start();
   });
 </script>
+
+<style>
+  @keyframes scroll-tile {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 1000px 1000px;
+    }
+  }
+</style>
