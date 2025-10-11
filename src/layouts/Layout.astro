@@ -1,15 +1,60 @@
 ---
-import '../styles/global.css'
+import "../styles/global.css";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jargdev</title>
-</head>
-<body>
-    <slot />
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>jargdev</title>
+        <link rel="icon" type="image/x-icon" href="/favicon.png" />
+
+        <!-- meta & seo -->
+        <meta
+            name="description"
+            content="hi :3 I'm jarg, a software developer who's been in the programming industry for 7 years. Checkout my website @ jargdev.github.io!"
+        />
+        <meta
+            name="keywords"
+            content="jargdev, jarg, developer, portfolio, programming, web development, astro, github"
+        />
+        <meta name="author" content="jargdev" />
+
+        <link rel="canonical" href="https://jargdev.github.io/" />
+
+        <!-- Open Graph embeds (facebook, discord) -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://jargdev.github.io/" />
+        <meta property="og:title" content="jargdev" />
+        <meta
+            property="og:description"
+            content="hi :3 I'm jarg, a software developer who's been in the programming industry for 7 years."
+        />
+        <meta
+            property="og:image"
+            content="https://jargdev.github.io/favicon.png"
+        />
+        <meta property="og:site_name" content="jargdev" />
+        <meta property="og:locale" content="en_US" />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://jargdev.github.io/" />
+        <meta name="twitter:title" content="jargdev" />
+        <meta
+            name="twitter:description"
+            content="hi :3 I'm jarg, a software developer who's been in the programming industry for 7 years."
+        />
+        <meta
+            name="twitter:image"
+            content="https://jargdev.github.io/favicon.png"
+        />
+        <meta name="twitter:creator" content="@jargdev" />
+
+        <meta name="theme-color" content="#ff6200" />
+    </head>
+    <body style="scroll-behavior: smooth;">
+        <slot />
+    </body>
 </html>
