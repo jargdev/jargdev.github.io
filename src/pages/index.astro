@@ -5,6 +5,22 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout>
 	<Hero />
+	<div class="px-6 max-w-6xl mx-auto hidden" id="safari-warning">
+		<div
+			class="bg-orange-50 border border-orange-200 text-orange-800 px-6 py-4 text-center font-medium shadow-md rounded-xl mx-6 mt-4 max-w-5xl relative z-50"
+		>
+			⚠️ Safari sometimes has issues rendering sites correctly.
+			<span class="font-semibold text-[#ff6200]"
+				>For the best experience</span
+			>, please try another browser like Chrome or Firefox.
+			<button
+				class="ml-3 text-[#ff6200] hover:underline hover:cursor-pointer hover:scale-120 transition duration-300 ease-in-out"
+				onclick="this.parentElement.parentElement.remove()"
+			>
+				Dismiss
+			</button>
+		</div>
+	</div>
 
 	<section class="px-6 py-16 max-w-6xl mx-auto">
 		<div class="text-center mb-16">
@@ -64,6 +80,16 @@ import Layout from "../layouts/Layout.astro";
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
+	const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+	if (isSafari && !sessionStorage.getItem("safariWarned")) {
+		const warning = document.getElementById("safari-warning");
+		if (warning) {
+			warning.classList.remove("hidden");
+			sessionStorage.setItem("safariWarned", "true");
+		}
+	}
+
 	const ctx = document.getElementById("languageChart").getContext("2d");
 
 	const data = {
