@@ -3,9 +3,10 @@ interface Props {
     background: string;
     middleground: string;
     foreground: string;
+    video?: string;
 }
 
-const { background, middleground, foreground } = Astro.props;
+const { background, middleground, foreground, video } = Astro.props;
 ---
 
 <div
@@ -13,6 +14,7 @@ const { background, middleground, foreground } = Astro.props;
     data-background={background}
     data-middleground={middleground}
     data-foreground={foreground}
+    data-video={video}
 >
     <img
         src={background}
@@ -32,6 +34,19 @@ const { background, middleground, foreground } = Astro.props;
         class="absolute inset-0 w-full h-full object-contain layer"
         data-depth="0.25"
     />
+    {
+        video && (
+            <video
+                class="absolute inset-0 w-full h-full object-cover video-layer"
+                muted
+                loop
+                playsinline
+                preload="auto"
+            >
+                <source src={video} type="video/mp4" />
+            </video>
+        )
+    }
 </div>
 
 <style>
@@ -42,11 +57,25 @@ const { background, middleground, foreground } = Astro.props;
         backface-visibility: hidden;
     }
     .layer {
-        transition: transform 0.1s ease-out;
-        will-change: transform;
+        transition:
+            transform 0.1s ease-out,
+            opacity 0.3s ease;
+        will-change: transform, opacity;
         image-rendering: optimizeQuality;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
+    }
+    .video-layer {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        will-change: opacity;
+        z-index: 10;
+    }
+    .video-layer.active {
+        opacity: 1;
+    }
+    .parallax-card.video-active .layer {
+        opacity: 0;
     }
 </style>
 
@@ -56,6 +85,7 @@ const { background, middleground, foreground } = Astro.props;
             background?: string;
             middleground?: string;
             foreground?: string;
+            video?: string;
         };
     }
 
@@ -75,8 +105,14 @@ const { background, middleground, foreground } = Astro.props;
     cards.forEach((card) => {
         const rect = card.getBoundingClientRect();
         const layers = card.querySelectorAll<HTMLElement>(".layer");
+        const video = card.querySelector<HTMLVideoElement>(".video-layer");
 
-        const { background, middleground, foreground } = card.dataset;
+        const {
+            background,
+            middleground,
+            foreground,
+            video: videoSrc,
+        } = card.dataset;
         if (!background || !middleground || !foreground) {
             console.warn(
                 "Parallax card is missing one or more image sources:",
@@ -84,6 +120,8 @@ const { background, middleground, foreground } = Astro.props;
             );
             return;
         }
+
+        let videoTimeout: number | null = null;
 
         const handleMouseMove = throttle((e: MouseEvent) => {
             const x = e.clientX - rect.left - rect.width / 2;
@@ -102,9 +140,39 @@ const { background, middleground, foreground } = Astro.props;
             });
         }, 16);
 
+        const startVideo = () => {
+            if (video && videoSrc) {
+                video
+                    .play()
+                    .catch((err) => console.error("Video play failed:", err));
+                card.classList.add("video-active");
+                video.classList.add("active");
+            }
+        };
+
+        const stopVideo = () => {
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+                card.classList.remove("video-active");
+                video.classList.remove("active");
+            }
+        };
+
         card.addEventListener("mousemove", handleMouseMove);
 
+        card.addEventListener("mouseenter", () => {
+            if (videoSrc && video) {
+                videoTimeout = setTimeout(startVideo, 2000);
+            }
+        });
+
         card.addEventListener("mouseleave", () => {
+            if (videoTimeout) {
+                clearTimeout(videoTimeout);
+                videoTimeout = null;
+            }
+            stopVideo();
             card.style.transform = "rotateX(0deg) rotateY(0deg)";
             layers.forEach((layer) => {
                 layer.style.transform = "translate(0px, 0px) scale(1.05)";
