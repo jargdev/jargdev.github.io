@@ -9,7 +9,7 @@ const { background, middleground, foreground } = Astro.props;
 ---
 
 <div
-    class="parallax-card relative w-full max-w-[384px] aspect-[16/9] rounded-xl overflow-hidden bg-black shadow-lg hover:shadow-xl transition-shadow duration-300"
+    class="parallax-card relative w-full max-w-[384px] aspect-[16/9] rounded-xl overflow-hidden bg-black shadow-xl hover:shadow-2xl transition-shadow duration-300 hover:cursor-pointer"
     data-background={background}
     data-middleground={middleground}
     data-foreground={foreground}
@@ -89,8 +89,8 @@ const { background, middleground, foreground } = Astro.props;
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
 
-            const tiltX = (y / rect.height) * 4;
-            const tiltY = -(x / rect.width) * 4;
+            const tiltX = (y / rect.height) * 2;
+            const tiltY = -(x / rect.width) * 2;
 
             card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 
