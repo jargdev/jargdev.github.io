@@ -16,6 +16,11 @@ export default defineConfig({
         host: 'apiv4321.skibidihomer.fun',
         port: 4321
       }
+    },
+    preview: {
+      allowedHosts: true,
+      host: true,
+      port: 4321
     }
   }
 });

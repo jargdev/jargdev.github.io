@@ -10,7 +10,7 @@ const { background, middleground, foreground, video } = Astro.props;
 ---
 
 <div
-    class="parallax-card relative w-full max-w-[384px] aspect-[16/9] rounded-xl overflow-hidden bg-black shadow-xl hover:shadow-2xl transition-shadow duration-300 hover:cursor-pointer"
+    class="parallax-card relative w-full max-w-[384px] aspect-[16/9] rounded-xl overflow-hidden bg-black shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 hover:cursor-pointer"
     data-background={background}
     data-middleground={middleground}
     data-foreground={foreground}
@@ -127,8 +127,8 @@ const { background, middleground, foreground, video } = Astro.props;
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
 
-            const tiltX = (y / rect.height) * 2;
-            const tiltY = -(x / rect.width) * 2;
+            const tiltX = y / rect.height;
+            const tiltY = -(x / rect.width);
 
             card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
 
@@ -163,6 +163,7 @@ const { background, middleground, foreground, video } = Astro.props;
 
         card.addEventListener("mouseenter", () => {
             if (videoSrc && video) {
+                //@ts-ignore ts doesnt like me :(
                 videoTimeout = setTimeout(startVideo, 2000);
             }
         });
