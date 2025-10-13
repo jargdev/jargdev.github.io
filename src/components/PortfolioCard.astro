@@ -1,0 +1,120 @@
+---
+interface Props {
+    background: string;
+    middleground: string;
+    foreground: string;
+}
+
+const { background, middleground, foreground } = Astro.props;
+---
+
+<div
+    class="parallax-card relative w-full max-w-[384px] aspect-[16/9] rounded-xl overflow-hidden bg-black shadow-lg hover:shadow-xl transition-shadow duration-300"
+    data-background={background}
+    data-middleground={middleground}
+    data-foreground={foreground}
+>
+    <img
+        src={background}
+        alt="Background layer"
+        class="absolute inset-0 w-full h-full object-cover layer"
+        data-depth="0.05"
+    />
+    <img
+        src={middleground}
+        alt="Middleground layer"
+        class="absolute inset-0 w-full h-full object-contain layer"
+        data-depth="0.15"
+    />
+    <img
+        src={foreground}
+        alt="Foreground layer"
+        class="absolute inset-0 w-full h-full object-contain layer"
+        data-depth="0.25"
+    />
+</div>
+
+<style>
+    .parallax-card {
+        perspective: 800px;
+        transform-style: preserve-3d;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+    .layer {
+        transition: transform 0.1s ease-out;
+        will-change: transform;
+        image-rendering: optimizeQuality;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+</style>
+
+<script>
+    interface ParallaxCard extends HTMLElement {
+        dataset: {
+            background?: string;
+            middleground?: string;
+            foreground?: string;
+        };
+    }
+
+    const throttle = (func: (...args: any[]) => void, limit: number) => {
+        let inThrottle: boolean;
+        return (...args: any[]) => {
+            if (!inThrottle) {
+                func(...args);
+                inThrottle = true;
+                setTimeout(() => (inThrottle = false), limit);
+            }
+        };
+    };
+
+    const cards = document.querySelectorAll<ParallaxCard>(".parallax-card");
+
+    cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const layers = card.querySelectorAll<HTMLElement>(".layer");
+
+        const { background, middleground, foreground } = card.dataset;
+        if (!background || !middleground || !foreground) {
+            console.warn(
+                "Parallax card is missing one or more image sources:",
+                card.dataset,
+            );
+            return;
+        }
+
+        const handleMouseMove = throttle((e: MouseEvent) => {
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            const tiltX = (y / rect.height) * 4;
+            const tiltY = -(x / rect.width) * 4;
+
+            card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
+            layers.forEach((layer) => {
+                const depth = parseFloat(layer.dataset.depth || "0");
+                const moveX = x * depth * 0.3;
+                const moveY = y * depth * 0.3;
+                layer.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
+            });
+        }, 16);
+
+        card.addEventListener("mousemove", handleMouseMove);
+
+        card.addEventListener("mouseleave", () => {
+            card.style.transform = "rotateX(0deg) rotateY(0deg)";
+            layers.forEach((layer) => {
+                layer.style.transform = "translate(0px, 0px) scale(1.05)";
+            });
+        });
+
+        const updateRect = () => {
+            const newRect = card.getBoundingClientRect();
+            Object.assign(rect, newRect);
+        };
+        window.addEventListener("resize", throttle(updateRect, 100));
+    });
+</script>

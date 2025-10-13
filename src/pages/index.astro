@@ -1,5 +1,6 @@
 ---
 import Hero from "../components/Hero.astro";
+import PortfolioCard from "../components/PortfolioCard.astro";
 import Layout from "../layouts/Layout.astro";
 ---
 
@@ -14,7 +15,7 @@ import Layout from "../layouts/Layout.astro";
 				>For the best experience</span
 			>, please try another browser like Chrome or Firefox.
 			<button
-				class="ml-3 text-[#ff6200] hover:underline hover:cursor-pointer hover:scale-120 transition duration-300 ease-in-out"
+				class="ml-3 text-[#ff6200] hover:underline hover:cursor-pointer hover:scale-110 transition duration-300 ease-in-out"
 				onclick="this.parentElement.parentElement.remove()"
 			>
 				Dismiss
@@ -29,7 +30,6 @@ import Layout from "../layouts/Layout.astro";
 			>
 				Hello World!
 			</h1>
-
 			<p
 				class="text-[#555] text-xl leading-relaxed max-w-3xl mx-auto font-light"
 			>
@@ -76,6 +76,29 @@ import Layout from "../layouts/Layout.astro";
 			</div>
 		</div>
 	</section>
+
+	<section class="px-6 py-16 max-w-6xl mx-auto">
+		<div class="text-center mb-12">
+			<h2
+				class="text-5xl font-black mb-6 bg-gradient-to-r from-[#ff6200] to-[#ff8c42] bg-clip-text text-transparent drop-shadow-sm"
+			>
+				My Projects
+			</h2>
+			<p
+				class="text-[#555] text-lg leading-relaxed max-w-2xl mx-auto font-light"
+			>
+				Explore some of the projects I've worked on, showcasing my
+				skills in programming and design. More to come!
+			</p>
+		</div>
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+			<PortfolioCard
+				background="/projects/openwheels/bg.png"
+				middleground="/projects/openwheels/logo.png"
+				foreground="/projects/openwheels/char.png"
+			/>
+		</div>
+	</section>
 </Layout>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -90,99 +113,102 @@ import Layout from "../layouts/Layout.astro";
 		}
 	}
 
-	const ctx = document.getElementById("languageChart").getContext("2d");
-
-	const data = {
-		labels: ["Lua", "Python", "C", "JS/TS"],
-		datasets: [
-			{
-				label: "Years of Experience",
-				data: [7, 5, 3.5, 3],
-				backgroundColor: [
-					"rgba(255, 98, 0, 0.8)",
-					"rgba(255, 159, 64, 0.8)",
-					"rgba(255, 206, 86, 0.8)",
-					"rgba(75, 192, 192, 0.8)",
-				],
-				borderColor: [
-					"rgba(255, 98, 0, 1)",
-					"rgba(255, 159, 64, 1)",
-					"rgba(255, 206, 86, 1)",
-					"rgba(75, 192, 192, 1)",
-				],
-				borderWidth: 3,
-				borderRadius: 12,
-				barPercentage: 0.6,
-			},
-		],
-	};
-
-	const config = {
-		type: "bar",
-		data: data,
-		options: {
-			responsive: true,
-			maintainAspectRatio: false,
-			animation: {
-				duration: 1200,
-				easing: "easeOutQuart",
-			},
-			plugins: {
-				legend: { display: false },
-				title: {
-					display: true,
-					text: "Programming Language Experience",
-					color: "#666",
-					font: {
-						size: 20,
-						family: "'Inter', sans-serif",
-						weight: "700",
-					},
-					padding: 20,
+	const ctx = document.getElementById("languageChart")?.getContext("2d");
+	if (!ctx) {
+		console.warn("Canvas context for languageChart not found");
+	} else {
+		const data = {
+			labels: ["Lua", "Python", "C", "JS/TS"],
+			datasets: [
+				{
+					label: "Years of Experience",
+					data: [7, 5, 3.5, 3],
+					backgroundColor: [
+						"rgba(255, 98, 0, 0.8)",
+						"rgba(255, 159, 64, 0.8)",
+						"rgba(255, 206, 86, 0.8)",
+						"rgba(75, 192, 192, 0.8)",
+					],
+					borderColor: [
+						"rgba(255, 98, 0, 1)",
+						"rgba(255, 159, 64, 1)",
+						"rgba(255, 206, 86, 1)",
+						"rgba(75, 192, 192, 1)",
+					],
+					borderWidth: 3,
+					borderRadius: 12,
+					barPercentage: 0.6,
 				},
-				tooltip: {
-					backgroundColor: "rgba(0, 0, 0, 0.9)",
-					titleColor: "#fff",
-					bodyColor: "#fff",
-					cornerRadius: 8,
-					displayColors: false,
+			],
+		};
+
+		const config = {
+			type: "bar",
+			data: data,
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				animation: {
+					duration: 1200,
+					easing: "easeOutQuart",
 				},
-			},
-			scales: {
-				y: {
-					beginAtZero: true,
+				plugins: {
+					legend: { display: false },
 					title: {
 						display: true,
-						text: "Years",
+						text: "Programming Language Experience",
 						color: "#666",
-						font: { size: 14, weight: "600" },
+						font: {
+							size: 20,
+							family: "'Inter', sans-serif",
+							weight: "700",
+						},
+						padding: 20,
 					},
-					grid: {
-						color: "#f0f0f0",
-						lineWidth: 2,
-					},
-					ticks: {
-						color: "#666",
-						font: { size: 13, weight: "500" },
-						stepSize: 1,
+					tooltip: {
+						backgroundColor: "rgba(0, 0, 0, 0.9)",
+						titleColor: "#fff",
+						bodyColor: "#fff",
+						cornerRadius: 8,
+						displayColors: false,
 					},
 				},
-				x: {
-					title: {
-						display: true,
-						text: "Programming Language",
-						color: "#666",
-						font: { size: 14, weight: "600" },
+				scales: {
+					y: {
+						beginAtZero: true,
+						title: {
+							display: true,
+							text: "Years",
+							color: "#666",
+							font: { size: 14, weight: "600" },
+						},
+						grid: {
+							color: "#f0f0f0",
+							lineWidth: 2,
+						},
+						ticks: {
+							color: "#666",
+							font: { size: 13, weight: "500" },
+							stepSize: 1,
+						},
 					},
-					grid: { display: false },
-					ticks: {
-						color: "#666",
-						font: { size: 14, weight: "500" },
+					x: {
+						title: {
+							display: true,
+							text: "Programming Language",
+							color: "#666",
+							font: { size: 14, weight: "600" },
+						},
+						grid: { display: false },
+						ticks: {
+							color: "#666",
+							font: { size: 14, weight: "500" },
+						},
 					},
 				},
 			},
-		},
-	};
+		};
 
-	new Chart(ctx, config);
+		new Chart(ctx, config);
+	}
 </script>
