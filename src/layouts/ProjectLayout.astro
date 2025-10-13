@@ -1,7 +1,125 @@
 ---
 import Layout from "./Layout.astro";
+
+const { frontmatter } = Astro.props;
+const {
+    title = "Untitled Project",
+    description = "",
+    cover = "/projects/default.png",
+    video = "",
+    date = "",
+    tags = [],
+    repo = "",
+    link = "",
+} = frontmatter;
 ---
 
 <Layout>
-    <slot />
+    <section class="relative w-full overflow-hidden">
+        <div
+            class="relative w-full max-w-[1920px] mx-auto aspect-[20/9] flex items-center justify-center"
+        >
+            <div
+                class="absolute inset-0 bg-gradient-to-b from-[#fa380d] to-[#fe850d]"
+            >
+            </div>
+            <img
+                src={cover}
+                alt={title}
+                class="absolute inset-0 w-full h-full object-cover opacity-60"
+            />
+            <div
+                class="relative z-10 text-center text-white px-6 max-w-4xl mx-auto drop-shadow-xl"
+            >
+                <h1 class="text-6xl font-black mb-4">{title}</h1>
+                {description && <p class="text-xl font-light">{description}</p>}
+                {date && <p class="mt-3 text-sm opacity-90">📅 {date}</p>}
+                {
+                    tags.length > 0 && (
+                        <div class="mt-4 flex flex-wrap justify-center gap-2">
+                            {tags.map((tag) => (
+                                <span class="bg-white/20 px-3 py-1 rounded-full text-sm font-medium tracking-wide">
+                                    #{tag}
+                                </span>
+                            ))}
+                        </div>
+                    )
+                }
+            </div>
+        </div>
+
+        <svg
+            class="absolute bottom-0 w-full h-24"
+            viewBox="0 0 1440 320"
+            preserveAspectRatio="none"
+        >
+            <path
+                fill="white"
+                d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,160C672,139,768,117,864,117.3C960,117,1056,139,1152,138.7C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+            ></path>
+        </svg>
+    </section>
+
+    <main class="px-6 py-16 max-w-5xl mx-auto">
+        {
+            video && (
+                <div class="mb-12 rounded-2xl overflow-hidden shadow-xl border border-gray-100">
+                    <video
+                        src={video}
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                        class="w-full h-auto object-cover"
+                    />
+                </div>
+            )
+        }
+
+        <article
+            class="prose prose-lg max-w-none text-[#333] prose-headings:text-[#ff6200] prose-a:text-[#ff6200] prose-a:no-underline hover:prose-a:underline"
+        >
+            <slot />
+        </article>
+
+        {
+            (repo || link) && (
+                <div class="mt-12 flex flex-wrap gap-4">
+                    {repo && (
+                        <a
+                            href={repo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="px-5 py-3 bg-[#ff6200] text-white font-medium rounded-full shadow-md hover:shadow-xl hover:bg-[#fe850d] transition-all duration-300"
+                        >
+                            🧠 View Source
+                        </a>
+                    )}
+                    {link && (
+                        <a
+                            href={link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="px-5 py-3 bg-white text-[#ff6200] border border-[#ff6200] font-medium rounded-full shadow-md hover:shadow-xl hover:bg-[#fff4ee] transition-all duration-300"
+                        >
+                            🚀 Visit Project
+                        </a>
+                    )}
+                </div>
+            )
+        }
+    </main>
 </Layout>
+
+<style>
+    .prose img {
+        border-radius: 1rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+    .prose code {
+        background: #fff4ee;
+        color: #ff6200;
+        padding: 0.2em 0.4em;
+        border-radius: 6px;
+    }
+</style>

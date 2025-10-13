@@ -4,52 +4,97 @@ interface Props {
     middleground: string;
     foreground: string;
     video?: string;
+    link?: string;
 }
 
-const { background, middleground, foreground, video } = Astro.props;
+const { background, middleground, foreground, video, link } = Astro.props;
 ---
 
-<div
-    class="parallax-card relative w-full max-w-[384px] aspect-[16/9] rounded-xl overflow-hidden bg-black shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 hover:cursor-pointer"
-    data-background={background}
-    data-middleground={middleground}
-    data-foreground={foreground}
-    data-video={video}
->
-    <div class="parallax-inner relative w-full h-full">
-        <img
-            src={background}
-            alt="Background layer"
-            class="absolute inset-0 w-full h-full object-cover layer"
-            data-depth="0.05"
-        />
-        <img
-            src={middleground}
-            alt="Middleground layer"
-            class="absolute inset-0 w-full h-full object-contain layer"
-            data-depth="0.15"
-        />
-        <img
-            src={foreground}
-            alt="Foreground layer"
-            class="absolute inset-0 w-full h-full object-contain layer"
-            data-depth="0.25"
-        />
-        {
-            video && (
-                <video
-                    class="absolute inset-0 w-full h-full object-cover video-layer"
-                    muted
-                    loop
-                    playsinline
-                    preload="auto"
-                >
-                    <source src={video} type="video/mp4" />
-                </video>
-            )
-        }
-    </div>
-</div>
+{
+    link ? (
+        <a href={link} class="block w-full max-w-[384px] aspect-[16/9]">
+            <div
+                class="parallax-card relative w-full h-full rounded-xl overflow-hidden bg-black shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 hover:cursor-pointer"
+                data-background={background}
+                data-middleground={middleground}
+                data-foreground={foreground}
+                data-video={video}
+            >
+                <div class="parallax-inner relative w-full h-full">
+                    <img
+                        src={background}
+                        alt="Background layer"
+                        class="absolute inset-0 w-full h-full object-cover layer"
+                        data-depth="0.05"
+                    />
+                    <img
+                        src={middleground}
+                        alt="Middleground layer"
+                        class="absolute inset-0 w-full h-full object-contain layer"
+                        data-depth="0.15"
+                    />
+                    <img
+                        src={foreground}
+                        alt="Foreground layer"
+                        class="absolute inset-0 w-full h-full object-contain layer"
+                        data-depth="0.25"
+                    />
+                    {video && (
+                        <video
+                            class="absolute inset-0 w-full h-full object-cover video-layer"
+                            muted
+                            loop
+                            playsinline
+                            preload="auto"
+                        >
+                            <source src={video} type="video/mp4" />
+                        </video>
+                    )}
+                </div>
+            </div>
+        </a>
+    ) : (
+        <div
+            class="parallax-card relative w-full max-w-[384px] aspect-[16/9] rounded-xl overflow-hidden bg-black shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 hover:cursor-pointer"
+            data-background={background}
+            data-middleground={middleground}
+            data-foreground={foreground}
+            data-video={video}
+        >
+            <div class="parallax-inner relative w-full h-full">
+                <img
+                    src={background}
+                    alt="Background layer"
+                    class="absolute inset-0 w-full h-full object-cover layer"
+                    data-depth="0.05"
+                />
+                <img
+                    src={middleground}
+                    alt="Middleground layer"
+                    class="absolute inset-0 w-full h-full object-contain layer"
+                    data-depth="0.15"
+                />
+                <img
+                    src={foreground}
+                    alt="Foreground layer"
+                    class="absolute inset-0 w-full h-full object-contain layer"
+                    data-depth="0.25"
+                />
+                {video && (
+                    <video
+                        class="absolute inset-0 w-full h-full object-cover video-layer"
+                        muted
+                        loop
+                        playsinline
+                        preload="auto"
+                    >
+                        <source src={video} type="video/mp4" />
+                    </video>
+                )}
+            </div>
+        </div>
+    )
+}
 
 <style>
     .parallax-card {
