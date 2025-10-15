@@ -21,11 +21,32 @@ const { background, middleground, foreground, video, link } = Astro.props;
                 data-video={video}
             >
                 <div class="parallax-inner relative w-full h-full">
-                    <img src={background} alt="Background layer" class="absolute inset-0 w-full h-full object-cover layer" data-depth="0.05" />
-                    <img src={middleground} alt="Middleground layer" class="absolute inset-0 w-full h-full object-cover layer" data-depth="0.15" />
-                    <img src={foreground} alt="Foreground layer" class="absolute inset-0 w-full h-full object-cover layer" data-depth="0.25" />
+                    <img
+                        src={background}
+                        alt="Background layer"
+                        class="absolute inset-0 w-full h-full object-cover layer"
+                        data-depth="0.05"
+                    />
+                    <img
+                        src={middleground}
+                        alt="Middleground layer"
+                        class="absolute inset-0 w-full h-full object-cover layer"
+                        data-depth="0.15"
+                    />
+                    <img
+                        src={foreground}
+                        alt="Foreground layer"
+                        class="absolute inset-0 w-full h-full object-cover layer"
+                        data-depth="0.25"
+                    />
                     {video && (
-                        <video class="absolute inset-0 w-full h-full object-cover video-layer" muted loop playsinline preload="auto">
+                        <video
+                            class="absolute inset-0 w-full h-full object-cover video-layer"
+                            muted
+                            loop
+                            playsinline
+                            preload="auto"
+                        >
                             <source src={video} type="video/mp4" />
                         </video>
                     )}
@@ -41,11 +62,32 @@ const { background, middleground, foreground, video, link } = Astro.props;
             data-video={video}
         >
             <div class="parallax-inner relative w-full h-full">
-                <img src={background} alt="Background layer" class="absolute inset-0 w-full h-full object-cover layer" data-depth="0.05" />
-                <img src={middleground} alt="Middleground layer" class="absolute inset-0 w-full h-full object-cover layer" data-depth="0.15" />
-                <img src={foreground} alt="Foreground layer" class="absolute inset-0 w-full h-full object-cover layer" data-depth="0.25" />
+                <img
+                    src={background}
+                    alt="Background layer"
+                    class="absolute inset-0 w-full h-full object-cover layer"
+                    data-depth="0.05"
+                />
+                <img
+                    src={middleground}
+                    alt="Middleground layer"
+                    class="absolute inset-0 w-full h-full object-cover layer"
+                    data-depth="0.15"
+                />
+                <img
+                    src={foreground}
+                    alt="Foreground layer"
+                    class="absolute inset-0 w-full h-full object-cover layer"
+                    data-depth="0.25"
+                />
                 {video && (
-                    <video class="absolute inset-0 w-full h-full object-cover video-layer" muted loop playsinline preload="auto">
+                    <video
+                        class="absolute inset-0 w-full h-full object-cover video-layer"
+                        muted
+                        loop
+                        playsinline
+                        preload="auto"
+                    >
                         <source src={video} type="video/mp4" />
                     </video>
                 )}
@@ -55,113 +97,122 @@ const { background, middleground, foreground, video, link } = Astro.props;
 }
 
 <style>
-.parallax-card {
-    perspective: 800px;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-}
-.parallax-inner {
-    transition: transform 0.1s ease-out;
-    transform-style: preserve-3d;
-    will-change: transform;
-    transform-origin: center center;
-}
-.layer {
-    transition: transform 0.1s ease-out, opacity 0.3s ease;
-    will-change: transform, opacity;
-    transform-origin: center center;
-}
-.video-layer {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    will-change: opacity;
-    z-index: 10;
-}
-.parallax-card.video-active .layer {
-    opacity: 0;
-}
+    .parallax-card {
+        perspective: 800px;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+    }
+    .parallax-inner {
+        transition: transform 0.1s ease-out;
+        transform-style: preserve-3d;
+        will-change: transform;
+        transform-origin: center center;
+    }
+    .layer {
+        transition:
+            transform 0.1s ease-out,
+            opacity 0.3s ease;
+        will-change: transform, opacity;
+        transform-origin: center center;
+    }
+    .video-layer {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        will-change: opacity;
+        z-index: 10;
+    }
+    .parallax-card.video-active .layer {
+        opacity: 0;
+    }
 </style>
 
 <script>
-interface ParallaxCard extends HTMLElement {
-    dataset: {
-        background?: string;
-        middleground?: string;
-        foreground?: string;
-        video?: string;
+    interface ParallaxCard extends HTMLElement {
+        dataset: {
+            background?: string;
+            middleground?: string;
+            foreground?: string;
+            video?: string;
+        };
+    }
+
+    const throttle = (func: (...args: any[]) => void, limit: number) => {
+        let inThrottle: boolean;
+        return (...args: any[]) => {
+            if (!inThrottle) {
+                func(...args);
+                inThrottle = true;
+                setTimeout(() => (inThrottle = false), limit);
+            }
+        };
     };
-}
 
-const throttle = (func: (...args: any[]) => void, limit: number) => {
-    let inThrottle: boolean;
-    return (...args: any[]) => {
-        if (!inThrottle) {
-            func(...args);
-            inThrottle = true;
-            setTimeout(() => (inThrottle = false), limit);
-        }
-    };
-};
+    const cards = document.querySelectorAll<ParallaxCard>(".parallax-card");
 
-const cards = document.querySelectorAll<ParallaxCard>(".parallax-card");
+    cards.forEach((card) => {
+        const inner = card.querySelector<HTMLElement>(".parallax-inner");
+        if (!inner) return;
 
-cards.forEach((card) => {
-    const inner = card.querySelector<HTMLElement>(".parallax-inner");
-    if (!inner) return;
+        const layers = card.querySelectorAll<HTMLElement>(".layer");
+        const video = card.querySelector<HTMLVideoElement>(".video-layer");
+        const {
+            background,
+            middleground,
+            foreground,
+            video: videoSrc,
+        } = card.dataset;
+        if (!background || !middleground || !foreground) return;
 
-    const layers = card.querySelectorAll<HTMLElement>(".layer");
-    const video = card.querySelector<HTMLVideoElement>(".video-layer");
-    const { background, middleground, foreground, video: videoSrc } = card.dataset;
-    if (!background || !middleground || !foreground) return;
+        let videoTimeout: number | null = null;
 
-    let videoTimeout: number | null = null;
+        const handleMouseMove = throttle((e: MouseEvent) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            const tiltX = (y / rect.height) * 10;
+            const tiltY = -(x / rect.width) * 10;
+            inner.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+            layers.forEach((layer) => {
+                const depth = parseFloat(layer.dataset.depth || "0");
+                const moveX = x * depth * 0.15;
+                const moveY = y * depth * 0.15;
+                layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+            });
+        }, 16);
 
-    const handleMouseMove = throttle((e: MouseEvent) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const tiltX = (y / rect.height) * 10;
-        const tiltY = -(x / rect.width) * 10;
-        inner.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-        layers.forEach((layer) => {
-            const depth = parseFloat(layer.dataset.depth || "0");
-            const moveX = x * depth * 0.15;
-            const moveY = y * depth * 0.15;
-            layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+        const startVideo = () => {
+            if (video && videoSrc) {
+                video.play().catch(() => {});
+                card.classList.add("video-active");
+                video.classList.add("active");
+            }
+        };
+
+        const stopVideo = () => {
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+                card.classList.remove("video-active");
+                video.classList.remove("active");
+            }
+        };
+
+        card.addEventListener("mousemove", handleMouseMove);
+
+        card.addEventListener("mouseenter", () => {
+            if (videoSrc && video) videoTimeout = setTimeout(startVideo, 2000);
         });
-    }, 16);
 
-    const startVideo = () => {
-        if (video && videoSrc) {
-            video.play().catch(() => {});
-            card.classList.add("video-active");
-            video.classList.add("active");
-        }
-    };
-
-    const stopVideo = () => {
-        if (video) {
-            video.pause();
-            video.currentTime = 0;
-            card.classList.remove("video-active");
-            video.classList.remove("active");
-        }
-    };
-
-    card.addEventListener("mousemove", handleMouseMove);
-
-    card.addEventListener("mouseenter", () => {
-        if (videoSrc && video) videoTimeout = setTimeout(startVideo, 2000);
+        card.addEventListener("mouseleave", () => {
+            if (videoTimeout) {
+                clearTimeout(videoTimeout);
+                videoTimeout = null;
+            }
+            stopVideo();
+            inner.style.transform = "rotateX(0deg) rotateY(0deg)";
+            layers.forEach(
+                (layer) => (layer.style.transform = "translate3d(0px, 0px, 0)"),
+            );
+        });
     });
-
-    card.addEventListener("mouseleave", () => {
-        if (videoTimeout) {
-            clearTimeout(videoTimeout);
-            videoTimeout = null;
-        }
-        stopVideo();
-        inner.style.transform = "rotateX(0deg) rotateY(0deg)";
-        layers.forEach((layer) => (layer.style.transform = "translate3d(0px, 0px, 0)"));
-    });
-});
 </script>

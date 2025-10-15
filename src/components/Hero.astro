@@ -1,50 +1,59 @@
 <div class="relative w-full overflow-hidden flex justify-center">
   <div class="relative w-full max-w-[1920px] aspect-[20/9] overflow-hidden">
-    <div class="absolute inset-0 z-0 transform will-change-transform">
-      <div
-        class="w-full h-full object-cover bg-gradient-to-b from-[#fa380d] to-[#fe850d]"
-      >
-      </div>
-    </div>
     <div
-      class="absolute inset-0 overflow-hidden z-0 transform will-change-transform flex justify-center items-center"
+      class="absolute inset-0 z-0 bg-gradient-to-b from-[#fa380d] to-[#fe850d]"
     >
+      <div class="absolute inset-0 bg-noise"></div>
+    </div>
+
+    <div class="absolute inset-0 overflow-hidden z-0">
       <div
-        class="absolute inset-0 z-5 bg-repeat"
+        class="absolute inset-0 bg-repeat"
         style="
-        background-image: url('/hero/repeat.png');
-        background-size: auto;
-        animation: scroll-tile 16s linear infinite;
-        
-      "
+             background-image: url('/hero/repeat.png');
+             background-size: auto;
+             animation: scroll-tile 20s linear infinite;
+           "
       >
       </div>
     </div>
+
     <div
-      class="absolute inset-0 overflow-hidden z-0 transform will-change-transform flex justify-center items-center"
+      class="absolute inset-0 overflow-hidden z-10 flex justify-center items-center"
     >
       <img
         src="/hero/me.png"
-        alt="Foreground 1"
-        class="w-full h-full object-contain z-10"
+        alt="Main"
+        class="w-full h-full object-contain parallax-layer"
         data-speed="0.5"
       />
 
-      <div class="absolute bottom-0 right-0 z-20" data-speed="0.6">
+      <div
+        class="absolute bottom-0 right-0 z-20 parallax-layer"
+        data-speed="0.6"
+      >
         <img
           src="/hero/jargudevu.png"
-          alt="Foreground 2"
+          alt="Jargudevu"
           class="w-full h-full object-contain"
         />
         <button
-          class="absolute bg-white text-black px-2 py-2 rounded-full hover:bg-gray-200 transition aspect-square hover:cursor-pointer hover:scale-120 hover:rotate-[-12deg] shadow-xl/50 hover:shadow-xl/70"
-          style="top: 35%; left: 77%;"
           id="sound-btn"
+          class="absolute bg-white text-black px-3 py-3 rounded-full hover:bg-gray-200 transition-all duration-300 aspect-square hover:cursor-pointer shadow-xl hover:shadow-2xl group"
+          style="top: 35%; left: 77%;"
         >
-          <img src="/hero/sound.svg" alt="Play Me!" class="w-7 h-7" /></button
-        >
+          <img
+            src="/hero/sound.svg"
+            alt="Sound"
+            class="w-7 h-7 transition-transform duration-300 group-hover:scale-110 group-active:scale-95"
+          />
+          <span
+            class="absolute inset-0 rounded-full bg-white/20 scale-0 group-active:scale-150 opacity-0 group-active:opacity-100 transition-all duration-200"
+          ></span>
+        </button>
       </div>
     </div>
+
     <svg
       class="absolute bottom-0 w-full h-24 z-30"
       viewBox="0 0 1440 320"
@@ -62,35 +71,68 @@
   const layers = document.querySelectorAll(
     "[data-speed]",
   ) as NodeListOf<HTMLElement>;
-  window.addEventListener("scroll", () => {
+
+  let rafId: number;
+  function animate() {
     const scrollY = window.scrollY;
     layers.forEach((layer) => {
       const speed = parseFloat(layer.dataset.speed || "0");
       layer.style.transform = `translateY(${scrollY * speed}px) rotate(${scrollY * (speed * 0.02)}deg)`;
     });
-  });
+    rafId = requestAnimationFrame(animate);
+  }
+  animate();
 
-  const soundbtn = document.getElementById("sound-btn") as HTMLButtonElement;
-
+  const soundBtn = document.getElementById("sound-btn") as HTMLButtonElement;
   let audioContext: AudioContext | null = null;
   let audioBuffer: AudioBuffer | null = null;
+  let isPlaying = false;
 
-  soundbtn?.addEventListener("click", async () => {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+  soundBtn?.addEventListener("click", async () => {
+    try {
+      if (audioContext?.state === "suspended") {
+        await audioContext.resume();
+      }
+
+      if (!audioContext) {
+        audioContext = new (window.AudioContext ||
+          (window as any).webkitAudioContext)();
+      }
+
+      if (!audioBuffer) {
+        const response = await fetch("/hero/jargudevu.m4a");
+        if (!response.ok) throw new Error("Audio not found");
+        const arrayBuffer = await response.arrayBuffer();
+        audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      }
+
+      if (isPlaying) {
+        audioContext.suspend();
+        isPlaying = false;
+        soundBtn.classList.remove("playing");
+        return;
+      }
+
+      const source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContext.destination);
+      source.onended = () => {
+        isPlaying = false;
+        soundBtn.classList.remove("playing");
+      };
+      source.start();
+      isPlaying = true;
+      soundBtn.classList.add("playing");
+    } catch (error) {
+      console.error("Audio error:", error);
+      soundBtn.classList.add("error");
+      setTimeout(() => soundBtn.classList.remove("error"), 600);
     }
+  });
 
-    if (!audioBuffer) {
-      const response = await fetch("/hero/jargudevu.m4a");
-      const arrayBuffer = await response.arrayBuffer();
-      audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    }
-
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
+  window.addEventListener("beforeunload", () => {
+    if (rafId) cancelAnimationFrame(rafId);
+    audioContext?.close();
   });
 </script>
 
@@ -101,6 +143,108 @@
     }
     100% {
       background-position: 587px 885px;
+    }
+  }
+
+  @keyframes ripple {
+    0% {
+      scale: 0;
+      opacity: 1;
+    }
+    100% {
+      scale: 1.5;
+      opacity: 0;
+    }
+  }
+
+  .parallax-layer {
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  .bg-noise {
+    background-image: radial-gradient(
+        1px 1px at 20px 30px,
+        rgba(255, 255, 255, 0.15),
+        transparent
+      ),
+      radial-gradient(
+        1px 1px at 40px 70px,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+    background-size: 80px 80px;
+    opacity: 0.6;
+    animation: noise 30s linear infinite;
+  }
+
+  @keyframes noise {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 80px 80px;
+    }
+  }
+
+  #sound-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #sound-btn.playing {
+    background: linear-gradient(45deg, #10b981, #059669);
+    transform: scale(1.1) rotate(-12deg);
+  }
+
+  #sound-btn.error {
+    animation: shake 0.4s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .aspect-[20/9] {
+      aspect-ratio: 16/9;
+    }
+    #sound-btn {
+      padding: 2.5vw;
+      transform: scale(0.85);
+    }
+    #sound-btn img {
+      width: 6vw;
+      height: 6vw;
+    }
+  }
+
+  @media (min-width: 769px) {
+    #sound-btn {
+      padding: 1rem;
+    }
+    #sound-btn img {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .parallax-layer,
+    #sound-btn {
+      animation: none !important;
+      transform: none !important;
+    }
+    #sound-btn img {
+      transform: none !important;
     }
   }
 </style>

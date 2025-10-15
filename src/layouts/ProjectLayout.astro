@@ -15,84 +15,127 @@ const {
 ---
 
 <Layout>
-    <section class="relative w-full overflow-hidden">
-        <div
-            class="relative w-full max-w-[1920px] mx-auto aspect-[20/9] flex items-center justify-center"
-        >
+    <section
+        class="relative w-full overflow-hidden px-6 py-20 max-w-6xl mx-auto"
+    >
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
             <div
-                class="absolute inset-0 bg-gradient-to-b from-[#fa380d] to-[#fe850d]"
+                class="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-orange-400/20 to-orange-500/20 rounded-full blur-xl animate-float"
             >
             </div>
-            <img
-                src={cover}
-                alt={title}
-                class="absolute inset-0 w-full h-full object-cover opacity-60"
-            />
             <div
-                class="relative z-10 text-center text-white px-6 max-w-4xl mx-auto drop-shadow-xl"
+                class="absolute bottom-32 right-20 w-48 h-48 bg-gradient-to-br from-orange-300/20 to-orange-400/20 rounded-full blur-2xl animate-bounce delay-1000"
             >
-                <h1 class="text-6xl font-black mb-4">{title}</h1>
-                {description && <p class="text-xl font-light">{description}</p>}
-                {date && <p class="mt-3 text-sm opacity-90">📅 {date}</p>}
-                {
-                    tags.length > 0 && (
-                        <div class="mt-4 flex flex-wrap justify-center gap-2">
-                            {tags.map((tag) => (
-                                <span class="bg-white/20 px-3 py-1 rounded-full text-sm font-medium tracking-wide">
-                                    #{tag}
-                                </span>
-                            ))}
-                        </div>
-                    )
-                }
+            </div>
+            <div
+                class="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-br from-orange-500/30 to-orange-600/30 rounded-full blur-lg animate-ping delay-2000"
+            >
             </div>
         </div>
 
-        <svg
-            class="absolute bottom-0 w-full h-24"
-            viewBox="0 0 1440 320"
-            preserveAspectRatio="none"
-        >
-            <path
-                fill="white"
-                d="M0,128L48,144C96,160,192,192,288,197.3C384,203,480,181,576,160C672,139,768,117,864,117.3C960,117,1056,139,1152,138.7C1248,139,1344,117,1392,106.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-            ></path>
-        </svg>
+        <div class="relative z-10 text-center mb-20">
+            <div
+                class="inline-block mb-8 p-6 bg-gradient-to-r from-orange-500/10 to-orange-400/10 rounded-2xl backdrop-blur-sm border border-orange-200/50"
+            >
+                <h1
+                    class="text-6xl lg:text-7xl font-black mb-4 bg-gradient-to-r from-[#ff6200] via-[#ff8c42] to-[#ff6200] bg-clip-text text-transparent drop-shadow-2xl animate-gradient-x"
+                >
+                    {title}
+                </h1>
+                <div
+                    class="w-32 h-1 bg-gradient-to-r from-[#ff6200] to-[#ff8c42] mx-auto rounded-full animate-pulse"
+                >
+                </div>
+            </div>
+
+            {
+                description && (
+                    <p class="text-[#555] text-xl leading-relaxed max-w-3xl mx-auto font-light">
+                        {description}
+                    </p>
+                )
+            }
+
+            {
+                date && (
+                    <div class="mt-6 flex items-center justify-center gap-4 text-sm opacity-90">
+                        <span class="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full border border-orange-200/50">
+                            📅 {date}
+                        </span>
+                    </div>
+                )
+            }
+
+            {
+                tags.length > 0 && (
+                    <div class="mt-6 flex flex-wrap justify-center gap-3">
+                        {tags.map((tag) => (
+                            <span class="bg-gradient-to-r from-orange-500/10 to-orange-400/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-orange-200/50 text-[#ff6200]">
+                                #{tag}
+                            </span>
+                        ))}
+                    </div>
+                )
+            }
+        </div>
+
+        <div class="relative z-10 mb-16 group">
+            {
+                video ? (
+                    <div class="rounded-2xl overflow-hidden shadow-2xl border border-orange-100/50 bg-white/80 backdrop-blur-sm">
+                        <video
+                            src={video}
+                            autoplay
+                            muted
+                            loop
+                            playsinline
+                            class="w-full h-auto object-cover transition-all duration-700 group-hover:scale-105"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                ) : (
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-orange-100/50 bg-white/80 backdrop-blur-sm">
+                        <img
+                            src={cover}
+                            alt={title}
+                            class="w-full h-[400px] object-cover transition-all duration-700 group-hover:scale-105"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="w-3 h-3 bg-orange-400 rounded-full animate-ping" />
+                        </div>
+                    </div>
+                )
+            }
+        </div>
     </section>
 
-    <main class="px-6 py-16 max-w-5xl mx-auto">
-        {
-            video && (
-                <div class="mb-12 rounded-2xl overflow-hidden shadow-xl border border-gray-100">
-                    <video
-                        src={video}
-                        autoplay
-                        muted
-                        loop
-                        playsinline
-                        class="w-full h-auto object-cover"
-                    />
-                </div>
-            )
-        }
-
-        <article
-            class="prose prose-lg max-w-none text-[#333] prose-headings:text-[#ff6200] prose-a:text-[#ff6200] prose-a:no-underline hover:prose-a:underline"
-        >
-            <slot />
-        </article>
+    <main class="relative px-6 max-w-5xl mx-auto">
+        <div class="relative z-10 mb-12">
+            <div
+                class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-orange-100/50"
+            >
+                <article
+                    class="prose prose-lg max-w-none text-[#333] prose-headings:text-[#ff6200] prose-a:text-[#ff6200] prose-a:no-underline hover:prose-a:underline"
+                >
+                    <slot />
+                </article>
+            </div>
+        </div>
 
         {
             (repo || link) && (
-                <div class="mt-12 flex flex-wrap gap-4">
+                <div class="flex flex-wrap gap-6 justify-center mb-20">
                     {repo && (
                         <a
                             href={repo}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="px-5 py-3 bg-[#ff6200] text-white font-medium rounded-full shadow-md hover:shadow-xl hover:bg-[#fe850d] transition-all duration-300"
+                            class="group relative inline-flex items-center gap-3 px-6 py-4 bg-gradient-to-r from-[#ff6200] to-[#ff8c42] text-white font-semibold rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 ease-out hover:scale-105 backdrop-blur-sm border border-orange-200/30"
                         >
+                            <div class="w-2 h-2 bg-white rounded-full animate-ping opacity-0 group-hover:opacity-100 transition-opacity" />
                             🧠 View Source
+                            <div class="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity blur-sm" />
                         </a>
                     )}
                     {link && (
@@ -100,26 +143,104 @@ const {
                             href={link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="px-5 py-3 bg-white text-[#ff6200] border border-[#ff6200] font-medium rounded-full shadow-md hover:shadow-xl hover:bg-[#fff4ee] transition-all duration-300"
+                            class="group relative inline-flex items-center gap-3 px-6 py-4 bg-white/80 backdrop-blur-sm text-[#ff6200] font-semibold rounded-2xl shadow-xl hover:shadow-2xl border border-orange-200/50 transition-all duration-300 ease-out hover:scale-105 hover:bg-white"
                         >
                             🚀 Visit Project
+                            <div class="absolute inset-0 bg-gradient-to-r from-orange-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                         </a>
                     )}
                 </div>
             )
         }
+
+        <div class="relative -mx-6 mb-0">
+            <svg
+                class="w-full h-24"
+                viewBox="0 0 1440 120"
+                preserveAspectRatio="none"
+                style="margin-bottom: -1px;"
+            >
+                <defs>
+                    <linearGradient
+                        id="waveGradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                    >
+                        <stop
+                            offset="0%"
+                            style="stop-color:#fff;stop-opacity:0.9"></stop>
+                        <stop
+                            offset="50%"
+                            style="stop-color:#ff6200;stop-opacity:0.05"></stop>
+                        <stop
+                            offset="100%"
+                            style="stop-color:#fff;stop-opacity:0.9"></stop>
+                    </linearGradient>
+                </defs>
+                <path
+                    fill="url(#waveGradient)"
+                    opacity="0.7"
+                    d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                ></path>
+                <path
+                    fill="#fff"
+                    d="M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,80C672,64,768,64,864,80C960,96,1056,128,1152,128C1248,128,1344,96,1392,80L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                ></path>
+            </svg>
+        </div>
     </main>
 </Layout>
 
 <style>
+    @keyframes gradient-x {
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+        }
+    }
+    .animate-gradient-x {
+        background-size: 200% 200%;
+        animation: gradient-x 3s ease infinite;
+    }
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
     .prose img {
         border-radius: 1rem;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .prose img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 20px 40px rgba(255, 98, 0, 0.15);
     }
     .prose code {
-        background: #fff4ee;
+        background: linear-gradient(135deg, #fff4ee 0%, #ffe8d9 100%);
         color: #ff6200;
-        padding: 0.2em 0.4em;
-        border-radius: 6px;
+        padding: 0.25em 0.5em;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 98, 0, 0.1);
+        font-weight: 500;
+    }
+    .prose pre {
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        border: 1px solid rgba(255, 98, 0, 0.1);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
     }
 </style>
