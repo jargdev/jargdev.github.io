@@ -6,7 +6,7 @@ cover: "/projects/openwheels/bg.png"
 video: "https://www.goodboydigital.com/content/uploads/HappyWheels-CaseStudy.mp4"
 tags: ["game dev", "pixi.js", "typescript", "reverse engineering"]
 repo: "https://github.com/jargdev/openWheels"
-link: "https://jargdev.github.io/openWheels/"
+link: "https://jarg.wtf/openWheels/"
 ---
 
 <div class="space-y-8">
